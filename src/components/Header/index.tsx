@@ -1,9 +1,14 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
 import logo from '../../../public/logo.png';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+    const path = usePathname();
+
     return (
         <header className="w-full h-28 bg-seasalt font-roboto">
             <div className="max-w-screen-xl flex justify-center md:justify-between items-center h-28 m-auto mx-5 lg:mx-auto">
@@ -30,19 +35,27 @@ export default function Header() {
                     </Link>
                 </nav>
                 <div className="hidden md:flex justify-center items-center gap-3">
-                    <Link
-                        href="/register"
-                        className="px-6 py-3 bg-cambridge-blue rounded-lg font-bold text-seasalt-300 hover:bg-cambridge-blue-600"
-                    >
-                        Registrar
-                    </Link>
+                    {path != '/register' ? (
+                        <Link
+                            href="/register"
+                            className="px-6 py-3 bg-cambridge-blue rounded-lg font-bold text-seasalt-300 hover:bg-cambridge-blue-600"
+                        >
+                            Registrar
+                        </Link>
+                    ) : (
+                        <></>
+                    )}
 
-                    <Link
-                        href="/login"
-                        className="px-6 py-3 bg-hunter-green rounded-lg font-bold text-seasalt-300 hover:bg-hunter-green-600"
-                    >
-                        Entrar
-                    </Link>
+                    {path != '/login' ? (
+                        <Link
+                            href="/login"
+                            className="px-6 py-3 bg-hunter-green rounded-lg font-bold text-seasalt-300 hover:bg-hunter-green-600"
+                        >
+                            Entrar
+                        </Link>
+                    ) : (
+                        <></>
+                    )}
                 </div>
             </div>
         </header>
