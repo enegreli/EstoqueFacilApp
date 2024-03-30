@@ -1,11 +1,51 @@
+'use client';
+
+import { FormEvent, useState } from 'react';
+import { axiosInstance } from '@/services/AxiosInstance';
+import { PostRequestUser } from '@/types/user/PostRequestUser';
+import { PostResponseUser } from '@/types/user/PostResponseUser';
+
 export default function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const postUserLogin = async (
+        data: PostRequestUser,
+    ): Promise<PostResponseUser | undefined> => {
+        try {
+            const response = await axiosInstance.post('/auth/login', data);
+            return response.data as PostResponseUser;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const user: PostRequestUser = {
+            login: email,
+            password,
+        };
+
+        const userResponse = await postUserLogin(user);
+
+        if (userResponse != undefined) {
+            sessionStorage.setItem('Token', userResponse.token);
+        }
+    };
+
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-raisin-black">
                     Entrar na sua conta!
                 </h2>
-                <form className="space-y-6" action="#" method="POST">
+                <form
+                    className="space-y-6"
+                    method="POST"
+                    onSubmit={event => onSubmit(event)}
+                >
                     <div>
                         <label
                             htmlFor="email"
@@ -21,6 +61,7 @@ export default function Login() {
                                 autoComplete="email"
                                 required
                                 className="block w-full px-2 rounded-md border-0 py-1.5 text-raisin-black shadow-sm ring-1 ring-inset ring-cambridge-blue-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cambridge-blue-800 sm:text-sm sm:leading-6"
+                                onChange={event => setEmail(event.target.value)}
                             />
                         </div>
                     </div>
@@ -42,6 +83,9 @@ export default function Login() {
                                 autoComplete="current-password"
                                 required
                                 className="block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-cambridge-blue-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cambridge-blue-800 sm:text-sm sm:leading-6"
+                                onChange={event =>
+                                    setPassword(event.target.value)
+                                }
                             />
                         </div>
                     </div>

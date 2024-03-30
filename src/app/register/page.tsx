@@ -19,8 +19,6 @@ export default function Register() {
     ): Promise<PostResposeCompany | undefined> =>{
         try {
             let response = await axiosInstance.post("/companies", data);
-            console.log("calback response: ");
-            console.table(response.data);
             return response.data as PostResposeCompany;
         } catch (err) {
             console.log(err);
@@ -35,12 +33,10 @@ export default function Register() {
             password: password,
         };
 
-        console.log("submit: sending request...");
-        console.table(company);
         var companyResponse = await postNewCompany(company);
 
         if (companyResponse?.id) {
-            router.push("/")
+            router.push("/login");
         }
     };
 
