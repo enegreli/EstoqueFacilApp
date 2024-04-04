@@ -1,24 +1,16 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
-import { axiosInstance } from '@/services/AxiosInstance';
 import { PostRequestUser } from '@/types/user/PostRequestUser';
-import { PostResponseUser } from '@/types/user/PostResponseUser';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
+    const auth = useAuth();
+    const router = useRouter();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const postUserLogin = async (
-        data: PostRequestUser,
-    ): Promise<PostResponseUser | undefined> => {
-        try {
-            const response = await axiosInstance.post('/auth/login', data);
-            return response.data as PostResponseUser;
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -28,11 +20,7 @@ export default function Login() {
             password,
         };
 
-        const userResponse = await postUserLogin(user);
-
-        if (userResponse != undefined) {
-            sessionStorage.setItem('Token', userResponse.token);
-        }
+        await auth.Login(user).then(() => router.push("/"));
     };
 
     return (
