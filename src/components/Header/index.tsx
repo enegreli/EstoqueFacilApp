@@ -5,9 +5,11 @@ import Link from 'next/link';
 
 import logo from '../../../public/logo.png';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Header() {
     const path = usePathname();
+    const auth = useAuth();
 
     return (
         <header className="w-full h-28 bg-seasalt font-roboto">
@@ -23,40 +25,53 @@ export default function Header() {
                         height={120}
                     />
                 </Link>
-                <nav className="justify-center items-center gap-3 text-hunter-green-600 font-medium hidden md:flex">
-                    <Link href="/products" className="hover:font-bold">
-                        Produtos
-                    </Link>
-                    <Link href="/inbounds" className="hover:font-bold">
-                        Entradas
-                    </Link>
-                    <Link href="/outbounds" className="hover:font-bold">
-                        Saidas
-                    </Link>
-                </nav>
-                <div className="hidden md:flex justify-center items-center gap-3">
-                    {path != '/register' ? (
-                        <Link
-                            href="/register"
-                            className="px-6 py-3 bg-cambridge-blue rounded-lg font-bold text-seasalt-300 hover:bg-cambridge-blue-600"
-                        >
-                            Registrar
+                {auth.signed ? (
+                    <nav className="justify-center items-center gap-3 text-hunter-green-600 font-medium hidden md:flex">
+                        <Link href="/products" className="hover:font-bold">
+                            Produtos
                         </Link>
-                    ) : (
-                        <></>
-                    )}
+                        <Link href="/inbounds" className="hover:font-bold">
+                            Entradas
+                        </Link>
+                        <Link href="/outbounds" className="hover:font-bold">
+                            Saidas
+                        </Link>
+                    </nav>
+                ) : (
+                    <></>
+                )}
+                {auth.signed ? (
+                    <button
+                        className="px-6 py-3 bg-hunter-green rounded-lg font-bold text-seasalt-300 hover:bg-hunter-green-600"
+                        onClick={() => auth.Logout()}
+                    >
+                        Sair
+                    </button>
+                ) : (
+                    <div className="hidden md:flex justify-center items-center gap-3">
+                        {path != '/register' ? (
+                            <Link
+                                href="/register"
+                                className="px-6 py-3 bg-cambridge-blue rounded-lg font-bold text-seasalt-300 hover:bg-cambridge-blue-600"
+                            >
+                                Registrar
+                            </Link>
+                        ) : (
+                            <></>
+                        )}
 
-                    {path != '/login' ? (
-                        <Link
-                            href="/login"
-                            className="px-6 py-3 bg-hunter-green rounded-lg font-bold text-seasalt-300 hover:bg-hunter-green-600"
-                        >
-                            Entrar
-                        </Link>
-                    ) : (
-                        <></>
-                    )}
-                </div>
+                        {path != '/login' ? (
+                            <Link
+                                href="/login"
+                                className="px-6 py-3 bg-hunter-green rounded-lg font-bold text-seasalt-300 hover:bg-hunter-green-600"
+                            >
+                                Entrar
+                            </Link>
+                        ) : (
+                            <></>
+                        )}
+                    </div>
+                )}
             </div>
         </header>
     );
